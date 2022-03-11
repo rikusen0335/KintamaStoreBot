@@ -2,6 +2,7 @@ defmodule KintamaStoreBot.Consumer do
   alias Nostrum.Api
 
   alias KintamaStoreBot.Struct.State.AuthState
+  alias KintamaStoreBot.Handler.InteractionHandler
 
   use Nostrum.Consumer
 
@@ -27,7 +28,7 @@ defmodule KintamaStoreBot.Consumer do
   def handle_event({:INTERACTION_CREATE, interaction, _ws_state}) do
     # IO.puts("Got a interaction")
     # IO.inspect(interaction)
-    Handler.Interaction.handle(interaction)
+    InteractionHandler.handle_before(interaction)
   end
 
   def handle_event(_data), do: :ok
