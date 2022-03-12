@@ -12,7 +12,24 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
 
   @spec handle_before(%Interaction{}) :: {:ok} | {:error, String.t()}
   def handle_before(interaction) do
-    handle(interaction)
+    discord_user_id = DiscordUtils.get_user_id(interaction)
+    case interaction.data.name do
+      "login" ->
+        Repo.get_by(Account, discord_user_id: discord_user_id)
+        |> case do
+          nil -> handle(interaction)
+          _struct ->
+            Api.create_interaction_response(interaction, %{
+              type: 4,
+              data: %{
+                content: "すでにログインしています",
+                flags: 64
+              }
+            })
+            {:error, "Account already exist"}
+        end
+      _ -> handle(interaction)
+    end
   end
 
   defp handle(%Interaction{type: 2, data: %{name: "logout"}} = interaction) do
@@ -157,16 +174,16 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
         player_name: "#{game_name}##{tagline}",
       })
 
+      Api.create_interaction_response(interaction, %{
+        type: 4,
+        data: %{
+          content: "#{game_name}##{tagline}として正常にログインできました",
+          flags: 64
+        }
+      })
+
       MementoUtils.delete_state(discord_user_id)
     end
-
-    Api.create_interaction_response(interaction, %{
-      type: 4,
-      data: %{
-        content: "#{game_name}##{tagline}として正常にログインできました",
-        flags: 64
-      }
-    })
   end
 
   defp handle_command("store", interaction, token, entitlement) do
