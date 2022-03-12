@@ -30,8 +30,8 @@ defmodule KintamaStore.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:nostrum, "~> 0.5"},
-      {:nostrum, github: "Kraigie/nostrum", override: true},
+      {:nostrum, "~> 0.5"},
+      # {:nostrum, github: "Kraigie/nostrum", override: true},
       # {:nostrum, path: "../nostrum", override: true},
 
       {:nosedrum, "~> 0.4"},
