@@ -84,8 +84,18 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
         # auth_requestは成功時にパスに入ったトークンか、もしくは2段階認証を返す
         %{body: res_body, cookie: mfa_cookie} = auth_client |> RiotAuthApi.auth_request(initial_cookie, username, password)
 
-        handle_auth_response(res_body, interaction, mfa_cookie)
-        # handle_command(cmd_name, interaction, "token", "entitlement")
+        case res_body do
+          %{"error" => "auth_failure"} ->
+            Api.create_interaction_response(interaction, %{
+              type: 4,
+              data: %{
+                content: "ログイン情報が間違っている可能性があります。もう一度お試しください",
+                flags: 64
+              }
+            })
+          _ ->
+            handle_auth_response(res_body, interaction, mfa_cookie)
+        end
     end
   end
 

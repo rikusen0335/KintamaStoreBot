@@ -2,7 +2,7 @@ defmodule KintamaStoreBot.Consumer do
   alias Nostrum.Api
 
   alias KintamaStoreBot.Struct.State.AuthState
-  alias KintamaStoreBot.Handler.{InteractionHandler}
+  alias KintamaStoreBot.Handler.{InteractionHandler,MessageHandler}
 
   alias Nosedrum.Invoker.Split, as: CommandInvoker
   alias Nosedrum.Storage.ETS, as: CommandStorage
@@ -34,6 +34,7 @@ defmodule KintamaStoreBot.Consumer do
 
   def handle_event({:MESSAGE_CREATE, msg, _ws_state}) do
     CommandInvoker.handle_message(msg, CommandStorage)
+    MessageHandler.handle_before(msg)
   end
 
   def handle_event({:INTERACTION_CREATE, interaction, _ws_state}) do
