@@ -2,13 +2,18 @@ defmodule KintamaStoreBot.Consumer do
   alias Nostrum.Api
 
   alias KintamaStoreBot.Struct.State.AuthState
-  alias KintamaStoreBot.Handler.InteractionHandler
+  alias KintamaStoreBot.Handler.{InteractionHandler}
+
+  alias Nosedrum.Invoker.Split, as: CommandInvoker
+  alias Nosedrum.Storage.ETS, as: CommandStorage
 
   use Nostrum.Consumer
 
   @commands %{
-    "applycmd" => ValorantStoreBot.Cogs.ApplyCommand,
-    "help" => ValorantStoreBot.Cogs.Help,
+    "applycmd" => KintamaStoreBot.Cogs.ApplyCommand,
+    "removecmd" => KintamaStoreBot.Cogs.RemoveCommand,
+    "listcmd" => KintamaStoreBot.Cogs.ListGuildCommands,
+    # "help" => KintamaStoreBot.Cogs.Help,
   }
 
   def start_link do
@@ -23,6 +28,12 @@ defmodule KintamaStoreBot.Consumer do
 
   def handle_event({:READY, _data, _ws_state}) do
     Api.update_status(:online, ".help")
+
+    Enum.each(@commands, fn {name, cog} -> CommandStorage.add_command([name], cog) end)
+  end
+
+  def handle_event({:MESSAGE_CREATE, msg, _ws_state}) do
+    CommandInvoker.handle_message(msg, CommandStorage)
   end
 
   def handle_event({:INTERACTION_CREATE, interaction, _ws_state}) do

@@ -10,6 +10,7 @@ defmodule KintamaStoreBot.Application do
     children = [
       # Starts a worker by calling: KintamaStore.Worker.start_link(arg)
       # {KintamaStore.Worker, arg}
+      Nosedrum.Storage.ETS,
       KintamaStoreBot.Consumer,
       {KintamaStoreBot.Repo, []}
     ]

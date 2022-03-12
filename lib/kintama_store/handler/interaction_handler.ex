@@ -116,7 +116,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
       struct ->
         Repo.delete(struct)
         |> case do
-          {:ok, struct} ->
+          {:ok, _} ->
             # IO.inspect(struct)
             Api.create_interaction_response(interaction, %{
               type: 4,
@@ -125,7 +125,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
                 flags: 64
               }
             })
-          {:error, changeset} ->
+          {:error, _} ->
             # IO.inspect(changeset)
             Api.create_interaction_response(interaction, %{
               type: 4,

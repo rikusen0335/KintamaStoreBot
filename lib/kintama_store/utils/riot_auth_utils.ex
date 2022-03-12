@@ -1,5 +1,4 @@
 defmodule KintamaStoreBot.Utils.RiotAuthUtils do
-  use GenServer
   use Tesla
 
   alias Nostrum.Api
@@ -127,50 +126,8 @@ defmodule KintamaStoreBot.Utils.RiotAuthUtils do
         |> case do
           nil ->
             Repo.insert(%Account{discord_user_id: discord_user_id, username: username, password: password})
-
         end
     end
-    # auth_client
-    # |> RiotAuthApi.auth_request(initial_cookie, username, password)
-    # |> case do
-    #   {:ok, res} ->
-    #     Repo.get_by(ValorantAuth, discord_user_id: discord_user_id)
-    #     |> case do
-    #       nil ->
-    #         Repo.insert(%ValorantAuth{discord_user_id: discord_user_id, username: username, password: password})
-    #         |> case do
-    #           {:ok, _struct} -> IO.puts("Successfully saved username and password")
-    #           {:error, changeset} -> IO.inspect(changeset, label: "Failed to save username and password")
-    #         end
-    #       _ -> IO.puts("Data exists. Continue proceeding")
-    #     end
-
-    #     # tfa = 2fa
-    #     tfa_cookie = Tesla.get_headers(res, "set-cookie") |> Enum.join(";")
-
-    #     # So we need to overwrite cookie since it's different cookie to use on 2fa
-    #     Repo.get_by(CookieSession, discord_user_id: discord_user_id)
-    #     |> case do
-    #       nil ->
-    #         Repo.insert(%CookieSession{discord_user_id: discord_user_id, cookie: tfa_cookie})
-    #         |> case do
-    #           {:ok, _struct} -> IO.puts("Successfully saved cookie")
-    #           {:error, changeset} -> IO.inspect(changeset, label: "Failed to save cookie")
-    #         end
-    #       struct ->
-    #         Repo.delete!(struct)
-    #         Repo.insert(%CookieSession{discord_user_id: discord_user_id, cookie: tfa_cookie})
-    #         |> case do
-    #           {:ok, _struct} -> IO.puts("Successfully saved cookie")
-    #           {:error, changeset} -> IO.inspect(changeset, label: "Failed to save cookie")
-    #         end
-    #     end
-
-    #     handle_authentication(interaction, res.body)
-    #   {:error, error} -> IO.inspect(error)
-    # end
-
-    # {:ok}
   end
 
   # @spec login_and_retrive_token_entitlement(String.t(), String.t()) :: %{String.t(), String.t()}
