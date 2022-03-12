@@ -13,7 +13,7 @@ defmodule KintamaStoreBot.Consumer do
     "applycmd" => KintamaStoreBot.Cogs.ApplyCommand,
     "removecmd" => KintamaStoreBot.Cogs.RemoveCommand,
     "listcmd" => KintamaStoreBot.Cogs.ListGuildCommands,
-    # "help" => KintamaStoreBot.Cogs.Help,
+    "help" => KintamaStoreBot.Cogs.Help,
   }
 
   def start_link do

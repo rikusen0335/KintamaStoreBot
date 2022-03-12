@@ -5,6 +5,8 @@ then change `YOUR BOT TOKEN` to your bot token
 
 ```
 mix deps.get
+mix ecto.reset
+
 mix run --no-halt
 
 # OR if you want to debug the bot do this:
