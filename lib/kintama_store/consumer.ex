@@ -2,6 +2,7 @@ defmodule KintamaStoreBot.Consumer do
   alias Nostrum.Api
 
   alias KintamaStoreBot.Struct.State.AuthState
+  alias KintamaStoreBot.Struct.Ratelimit
   alias KintamaStoreBot.Handler.{InteractionHandler,MessageHandler}
 
   alias Nosedrum.Invoker.Split, as: CommandInvoker
@@ -22,6 +23,7 @@ defmodule KintamaStoreBot.Consumer do
 
     Memento.Schema.set_storage_type(node(), :ram_copies)
     Memento.Table.create!(AuthState)
+    Memento.Table.create!(Ratelimit)
 
     Consumer.start_link(__MODULE__)
   end

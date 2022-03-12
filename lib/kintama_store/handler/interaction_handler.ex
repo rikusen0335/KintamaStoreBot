@@ -3,6 +3,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
   alias Nostrum.Struct.Interaction
 
   alias KintamaStoreBot.Repo
+  alias KintamaStoreBot.Struct.Ratelimit
   alias KintamaStoreBot.Struct.State.AuthState
   alias KintamaStoreBot.Schema.Account
   alias KintamaStoreBot.Utils.{DiscordUtils,RiotAuthUtils,ValorantUtils,MementoUtils}
@@ -10,14 +11,37 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
 
   import Nostrum.Struct.Embed
 
+  defp ratelimit_validate(discord_user_id) do
+    Memento.transaction! fn ->
+      limit = case MementoUtils.get_ratelimit(discord_user_id) do
+        {:ok, limit} -> limit
+        {:error, :not_found} -> %Ratelimit{last_executed: 0}
+      end
+
+      # 現在の経過時間 - 最後に実行した時間 が 30分以上ならtrue
+      System.system_time(:second) - limit.last_executed > 30 * 60
+    end
+  end
+
   @spec handle_before(%Interaction{}) :: {:ok} | {:error, String.t()}
   def handle_before(interaction) do
     discord_user_id = DiscordUtils.get_user_id(interaction)
+
     case interaction.data.name do
       "login" ->
         Repo.get_by(Account, discord_user_id: discord_user_id)
         |> case do
-          nil -> handle(interaction)
+          nil ->
+            case ratelimit_validate(discord_user_id) do
+              true -> handle(interaction)
+              false -> Api.create_interaction_response(interaction, %{
+                type: 4,
+                data: %{
+                  content: "このコマンドは30分に1回のみ使用できます。しばらく待ったあと、もう一度お試しください",
+                  flags: 64
+                }
+              })
+            end
           _struct ->
             Api.create_interaction_response(interaction, %{
               type: 4,
@@ -28,7 +52,17 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
             })
             {:error, "Account already exist"}
         end
-      _ -> handle(interaction)
+      _ ->
+        case ratelimit_validate(discord_user_id) do
+          true -> handle(interaction)
+          false -> Api.create_interaction_response(interaction, %{
+            type: 4,
+            data: %{
+              content: "このコマンドは30分に1回のみ使用できます。しばらく待ったあと、もう一度お試しください",
+              flags: 64
+            }
+          })
+        end
     end
   end
 
@@ -242,6 +276,10 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
         embed: main_embed,
         file: %{name: "daily_store.png", body: daily_store_image}
       )
+    end
+
+    Memento.transaction! fn ->
+      MementoUtils.update_ratelimit(discord_user_id)
     end
 
     {:ok}
