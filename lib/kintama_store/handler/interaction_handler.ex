@@ -11,15 +11,23 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
 
   import Nostrum.Struct.Embed
 
-  defp ratelimit_validate(discord_user_id) do
-    Memento.transaction! fn ->
-      limit = case MementoUtils.get_ratelimit(discord_user_id) do
-        {:ok, limit} -> limit
-        {:error, :not_found} -> %Ratelimit{last_executed: 0}
-      end
+  defp ratelimit_validate(interaction) do
+    discord_user_id = DiscordUtils.get_user_id(interaction)
+    guild_id = DiscordUtils.get_guild_id(interaction)
 
-      # 現在の経過時間 - 最後に実行した時間 が 30分以上ならtrue
-      System.system_time(:second) - limit.last_executed > 30 * 60
+    case guild_id do
+      "611241167438348291" -> true
+      "202357801757048833" -> true
+      _ ->
+        Memento.transaction! fn ->
+          limit = case MementoUtils.get_ratelimit(discord_user_id) do
+            {:ok, limit} -> limit
+            {:error, :not_found} -> %Ratelimit{last_executed: 0}
+          end
+
+          # 現在の経過時間 - 最後に実行した時間 が 30分以上ならtrue(実行可能)
+          System.system_time(:second) - limit.last_executed > 30 * 60
+        end
     end
   end
 
@@ -32,7 +40,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
         Repo.get_by(Account, discord_user_id: discord_user_id)
         |> case do
           nil ->
-            case ratelimit_validate(discord_user_id) do
+            case ratelimit_validate(interaction) do
               true -> handle(interaction)
               false -> Api.create_interaction_response(interaction, %{
                 type: 4,
@@ -53,7 +61,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
             {:error, "Account already exist"}
         end
       _ ->
-        case ratelimit_validate(discord_user_id) do
+        case ratelimit_validate(interaction) do
           true -> handle(interaction)
           false -> Api.create_interaction_response(interaction, %{
             type: 4,
