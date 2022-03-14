@@ -17,7 +17,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
 
     case guild_id do
       "611241167438348291" -> true
-      "202357801757048833" -> true
+      "202357801757048833" -> raise "Oh no"
       _ ->
         Memento.transaction! fn ->
           limit = case MementoUtils.get_ratelimit(discord_user_id) do
@@ -284,10 +284,9 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
         embed: main_embed,
         file: %{name: "daily_store.png", body: daily_store_image}
       )
-    end
-
-    Memento.transaction! fn ->
-      MementoUtils.update_ratelimit(discord_user_id)
+      Memento.transaction! fn ->
+        MementoUtils.update_ratelimit(discord_user_id)
+      end
     end
 
     {:ok}

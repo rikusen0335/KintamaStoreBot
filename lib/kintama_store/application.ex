@@ -11,7 +11,7 @@ defmodule KintamaStoreBot.Application do
       # Starts a worker by calling: KintamaStore.Worker.start_link(arg)
       # {KintamaStore.Worker, arg}
       Nosedrum.Storage.ETS,
-      {KintamaStoreBot.Consumer, restart: :permanent},
+      {KintamaStoreBot.Consumer, restart: :permanent, max_restarts: 10},
       {KintamaStoreBot.Repo, []}
     ]
 
