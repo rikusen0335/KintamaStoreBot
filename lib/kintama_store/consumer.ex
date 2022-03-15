@@ -35,14 +35,32 @@ defmodule KintamaStoreBot.Consumer do
   end
 
   def handle_event({:MESSAGE_CREATE, msg, _ws_state}) do
-    CommandInvoker.handle_message(msg, CommandStorage)
-    MessageHandler.handle_before(msg)
+    try do
+      CommandInvoker.handle_message(msg, CommandStorage)
+      MessageHandler.handle_before(msg)
+    rescue
+      e ->
+        Api.create_message(msg.channel_id, ":exclamation: コマンドの実行中にエラーが発生しました。もう一度お試しいただくか、管理者に連絡してください。")
+        IO.inspect(e, label: "An error occued while handling message")
+    end
   end
 
   def handle_event({:INTERACTION_CREATE, interaction, _ws_state}) do
-    # IO.puts("Got a interaction")
-    # IO.inspect(interaction)
-    InteractionHandler.handle_before(interaction)
+    try do
+      # IO.puts("Got a interaction")
+      # IO.inspect(interaction)
+      InteractionHandler.handle_before(interaction)
+    rescue
+      e ->
+        Api.create_interaction_response(interaction, %{
+          type: 4,
+          data: %{
+            content: ":exclamation: コマンドの実行中にエラーが発生しました。もう一度お試しいただくか、管理者に連絡してください。",
+            flags: 64
+          }
+        })
+        IO.inspect(e, label: "An error occued while handling message")
+    end
   end
 
   def handle_event(_data), do: :ok

@@ -21,7 +21,7 @@ defmodule KintamaStoreBot.Handler.MessageHandler do
         Api.create_message(
           msg.channel_id,
           message_reference: %{message_id: msg.id},
-          content: "ログイン情報の漏洩防止のため、メッセージを削除しました。"
+          content: ":exclamation: ログイン情報の漏洩防止のため、メッセージを削除しました。"
         )
         Api.delete_message(msg)
 

@@ -45,7 +45,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
               false -> Api.create_interaction_response(interaction, %{
                 type: 4,
                 data: %{
-                  content: "このコマンドは30分に1回のみ使用できます。しばらく待ったあと、もう一度お試しください",
+                  content: ":warning: このコマンドは30分に1回のみ使用できます。しばらく待ったあと、もう一度お試しください",
                   flags: 64
                 }
               })
@@ -54,7 +54,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
             Api.create_interaction_response(interaction, %{
               type: 4,
               data: %{
-                content: "すでにログインしています",
+                content: ":warning: すでにログインしています",
                 flags: 64
               }
             })
@@ -66,7 +66,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
           false -> Api.create_interaction_response(interaction, %{
             type: 4,
             data: %{
-              content: "このコマンドは30分に1回のみ使用できます。しばらく待ったあと、もう一度お試しください",
+              content: ":warning: このコマンドは30分に1回のみ使用できます。しばらく待ったあと、もう一度お試しください",
               flags: 64
             }
           })
@@ -91,7 +91,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
         Api.create_interaction_response(interaction, %{
           type: 4,
           data: %{
-            content: "ログインを先に行ってください。(`/login`)\nまた、パスワードがこのボットの管理者にめちゃくちゃバレるので気をつけてください。\n\nパスワード生成ツールなどを使用して生成したパスワードを使用することをおすすめします。メモするのを忘れないでください。",
+            content: ":warning: ログインを先に行ってください。(`/login`)\nまた、パスワードがこのボットの管理者にめちゃくちゃバレるので気をつけてください。\n\nパスワード生成ツールなどを使用して生成したパスワードを使用することをおすすめします。メモするのを忘れないでください。",
             flags: 64
           }
         })
@@ -131,7 +131,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
             Api.create_interaction_response(interaction, %{
               type: 4,
               data: %{
-                content: "ログイン情報が間違っている可能性があります。もう一度お試しください",
+                content: ":x: ログイン情報が間違っている可能性があります。もう一度お試しください",
                 flags: 64
               }
             })
@@ -178,7 +178,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
         Api.create_interaction_response(interaction, %{
           type: 4,
           data: %{
-            content: "ログインしていないときはログアウトできません",
+            content: ":x: ログインしていないときはログアウトできません",
             flags: 64
           }
         })
@@ -190,7 +190,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
             Api.create_interaction_response(interaction, %{
               type: 4,
               data: %{
-                content: "正常にログアウトできました",
+                content: ":o: 正常にログアウトできました",
                 flags: 64
               }
             })
@@ -199,7 +199,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
             Api.create_interaction_response(interaction, %{
               type: 4,
               data: %{
-                content: "ログアウトできませんでした。もう一度お試しください",
+                content: ":x: ログアウトできませんでした。もう一度お試しください",
                 flags: 64
               }
             })
