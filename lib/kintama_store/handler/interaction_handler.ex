@@ -277,9 +277,12 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
     |> put_color(431_948)
 
     case daily_store_image do
-      :timeout -> Api.create_message(interaction.channel_id,
-        content: ":x: 結果を取得できませんでした。もう一度お試しください。"
-      )
+      :timeout -> Api.create_interaction_response(interaction, %{
+        type: 4,
+        data: %{
+          content: ":x: 結果を取得できませんでした。もう一度お試しください。"
+        }
+      })
       _ -> Api.create_message(interaction.channel_id,
         embed: main_embed,
         file: %{name: "daily_store.png", body: daily_store_image}
