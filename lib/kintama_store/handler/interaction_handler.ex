@@ -17,7 +17,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
 
     case guild_id do
       "611241167438348291" -> true
-      "202357801757048833" -> raise "Oh no"
+      "202357801757048833" -> true
       _ ->
         Memento.transaction! fn ->
           limit = case MementoUtils.get_ratelimit(discord_user_id) do
@@ -261,7 +261,9 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
       {:ok, response} ->
         # IO.inspect(response)
         response.body
-      {:error, error} -> IO.inspect(error)
+      {:error, error} ->
+        IO.inspect(error, label: "Error while retriving store image")
+        :timeout
     end
 
     # Remove unnecessary state record
