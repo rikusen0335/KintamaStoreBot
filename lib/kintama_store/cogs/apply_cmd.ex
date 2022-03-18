@@ -3,6 +3,8 @@ defmodule KintamaStoreBot.Cogs.ApplyCommand do
 
   alias Nostrum.Api
 
+  alias KintamaStoreBot.Utils.DiscordUtils
+
   @impl true
   def usage, do: ["applycmd"]
 
@@ -14,40 +16,7 @@ defmodule KintamaStoreBot.Cogs.ApplyCommand do
 
   @impl true
   def command(msg, _args) do
-    login = %{
-      name: "login",
-      description: "Riotアカウントにログインします",
-      options: [
-        %{
-          # ApplicationCommandType::STRING
-          type: 3,
-          name: "username",
-          description: "RiotアカウントのID（Valorant#1234形式じゃないただのID）",
-          required: true
-        },
-        %{
-          # ApplicationCommandType::STRING
-          type: 3,
-          name: "password",
-          description: "Riotアカウントのパスワード",
-          required: true
-        },
-      ]
-    }
-
-    logout = %{
-      name: "logout",
-      description: "いまログインしているアカウントの情報を削除します",
-    }
-
-    store = %{
-      name: "store",
-      description: "いまログインしているアカウントの今日のストアを確認します",
-    }
-
-    Api.create_guild_application_command(msg.guild_id, login) |> IO.inspect()
-    Api.create_guild_application_command(msg.guild_id, logout) |> IO.inspect()
-    Api.create_guild_application_command(msg.guild_id, store) |> IO.inspect()
+    DiscordUtils.apply_guild_commands(msg.guild_id)
 
     Api.create_message(msg.channel_id, "すべてのコマンドが正常に適応されました")
   end

@@ -4,6 +4,7 @@ defmodule KintamaStoreBot.Consumer do
   alias KintamaStoreBot.Struct.State.AuthState
   alias KintamaStoreBot.Struct.Ratelimit
   alias KintamaStoreBot.Handler.{InteractionHandler,MessageHandler}
+  alias KintamaStoreBot.Utils.DiscordUtils
 
   alias Nosedrum.Invoker.Split, as: CommandInvoker
   alias Nosedrum.Storage.ETS, as: CommandStorage
@@ -64,7 +65,7 @@ defmodule KintamaStoreBot.Consumer do
   end
 
   def handle_event({:GUILD_CREATE, guild, _ws_state}) do
-    IO.puts("[ID: #{guild.id}] | [名前: #{guild.name}] のサーバーに加入しました。")
+    IO.puts("+ [ID: #{guild.id}] | [名前: #{guild.name}] のサーバーに加入しました。")
 
     initial_message = "こんにちは！\nまずは`/login`、他のサーバーですでにログイン済みの方は`/store`を使ってください！"
 
@@ -72,6 +73,15 @@ defmodule KintamaStoreBot.Consumer do
       {:ok, _} -> :noop
       error -> IO.inspect(error, label: "メッセージを送信できませんでした")
     end
+
+    DiscordUtils.apply_guild_commands(guild.id)
+  end
+
+  def handle_event({:GUILD_DELETE, guild, _ws_state}) do
+    IO.puts("- [ID: #{guild.id}] | [名前: #{guild.name}] のサーバーから退出しました。")
+
+    # Application commands which belongs to the bot will be removed as a default specification of Discord bot
+    # DiscordUtils.remove_guild_commands(guild.id)
   end
 
   def handle_event(_data), do: :ok
