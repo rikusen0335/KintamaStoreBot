@@ -63,5 +63,16 @@ defmodule KintamaStoreBot.Consumer do
     end
   end
 
+  def handle_event({:GUILD_CREATE, guild, _ws_state}) do
+    IO.puts("[ID: #{guild.id}] | [名前: #{guild.name}] のサーバーに加入しました。")
+
+    initial_message = "こんにちは！\nまずは`/login`、他のサーバーですでにログイン済みの方は`/store`を使ってください！"
+
+    case Api.create_message(guild.system_channel_id, initial_message) do
+      {:ok, _} -> :noop
+      error -> IO.inspect(error, label: "メッセージを送信できませんでした")
+    end
+  end
+
   def handle_event(_data), do: :ok
 end
