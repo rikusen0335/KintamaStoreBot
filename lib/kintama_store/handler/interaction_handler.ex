@@ -285,13 +285,14 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
           content: ":x: 結果を取得できませんでした。もう一度お試しください。"
         }
       })
-      _ -> Api.create_message(interaction.channel_id,
-        embed: main_embed,
-        file: %{name: "daily_store.png", body: daily_store_image}
-      )
-      Memento.transaction! fn ->
-        MementoUtils.update_ratelimit(discord_user_id)
-      end
+      _ ->
+        Api.create_message(interaction.channel_id,
+          embed: main_embed,
+          file: %{name: "daily_store.png", body: daily_store_image}
+        )
+        Memento.transaction! fn ->
+          MementoUtils.update_ratelimit(discord_user_id)
+        end
     end
 
     {:ok}
