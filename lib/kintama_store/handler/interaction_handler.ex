@@ -263,7 +263,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
         response.body
       {:error, error} ->
         IO.inspect(error, label: "Error while retriving store image")
-        :timeout
+        nil
     end
 
     # Remove unnecessary state record
@@ -279,7 +279,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
     |> put_color(431_948)
 
     case daily_store_image do
-      :timeout -> Api.create_interaction_response(interaction, %{
+      nil -> Api.create_interaction_response(interaction, %{
         type: 4,
         data: %{
           content: ":x: 結果を取得できませんでした。もう一度お試しください。"

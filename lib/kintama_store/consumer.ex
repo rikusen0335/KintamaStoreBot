@@ -84,5 +84,5 @@ defmodule KintamaStoreBot.Consumer do
     # DiscordUtils.remove_guild_commands(guild.id)
   end
 
-  def handle_event(_data), do: :ok
+  def handle_event(_data), do: :noop
 end
