@@ -12,7 +12,7 @@ defmodule KintamaStoreBot.Application do
       # {KintamaStore.Worker, arg}
       Nosedrum.Storage.ETS,
       {KintamaStoreBot.Consumer, restart: :permanent, max_restarts: 10},
-      {KintamaStoreBot.Repo, []}
+      {KintamaStoreBot.Repo, []},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

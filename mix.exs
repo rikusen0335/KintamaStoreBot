@@ -38,10 +38,13 @@ defmodule KintamaStoreBot.MixProject do
       {:tesla, "~> 1.4"},
 
       # optional, but recommended adapter
-      {:hackney, "~> 1.17"},
+      {:hackney, "~> 1.18"},
+
+      {:httpoison, "~> 1.8"},
 
       # optional, required by JSON middleware
       {:jason, ">= 1.0.0"},
+      {:poison, "~> 5.0"},
 
       {:ecto, "~> 3.7"},
       {:ecto_sql, "~> 3.0"},

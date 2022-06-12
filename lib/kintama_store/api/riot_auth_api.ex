@@ -86,7 +86,7 @@ defmodule KintamaStoreBot.Api.RiotAuthApi do
       {Tesla.Middleware.BaseUrl, "https://auth.riotgames.com"},
       Tesla.Middleware.JSON,
       {Tesla.Middleware.BearerAuth, token: riot_token},
-      {Tesla.Middleware.Headers, [{"Content-Type", "application/json"}]}
+      {Tesla.Middleware.Headers, [{"Content-Type", "application/json"}, {"user-agent", "RiotClient/51.0.0.4429735.4381201 rso-auth (Windows;10;;Professional, x64)"}, {"X-Curl-Source", "Api"}]}
     ]
 
     Tesla.client(middleware)
