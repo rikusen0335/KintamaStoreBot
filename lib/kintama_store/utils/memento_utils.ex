@@ -20,14 +20,14 @@ defmodule KintamaStoreBot.Utils.MementoUtils do
     end
   end
 
-  def update_state(discord_user_id, changes = %{}) do
+  def update_state!(discord_user_id, changes = %{}) do
     Memento.Query.select(AuthState, {:==, :discord_user_id, discord_user_id})
     |> Enum.at(0)
     |> case do
       %AuthState{} = state ->
         state
         |> struct(changes)
-        |> Memento.Query.write()
+        |> Memento.Query.write!()
         |> then(&{:ok, &1})
 
       _ ->

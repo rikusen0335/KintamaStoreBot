@@ -100,6 +100,8 @@ defmodule KintamaStoreBot.Api.ValorantOfficialApi do
 
   end
 
+  # refs: for ClientPlatform: https://valapidocs.techchrism.me/endpoint/prices#client-platform
+  # refs: for ClientVersion:  https://dash.valorant-api.com/endpoints/version
   @spec client(String.t(), String.t()) :: Tesla.Client.t()
   def client(riot_token, riot_entitlement) do
     middleware = [
@@ -107,6 +109,8 @@ defmodule KintamaStoreBot.Api.ValorantOfficialApi do
       Tesla.Middleware.JSON,
       {Tesla.Middleware.Headers, [
         {"X-Riot-Entitlements-JWT", riot_entitlement},
+        {"X-Riot-ClientPlatform", "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9"},
+        {"X-Riot-ClientVersion", "release-09.10-shipping-16-2953141"},
         {"Content-Type", "application/json"},
       ]},
       {Tesla.Middleware.BearerAuth, token: riot_token},

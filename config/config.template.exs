@@ -15,3 +15,6 @@ config :kintama_store_bot, KintamaStoreBot.Repo,
   database: "./database.db" # Change anything you want
 
 config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
+
+config :bandit,
+  port: String.to_integer(System.get_env("PORT")) || 8888

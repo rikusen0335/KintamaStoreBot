@@ -9,9 +9,10 @@ defmodule KintamaStoreBot.Api.RiotAuthApi do
   def auth_cookies(client) do
     req_body = %{
       client_id: "play-valorant-web-prod",
-      nonce: 1,
+      nonce: "1",
       redirect_uri: "https://playvalorant.com/opt_in",
       response_type: "token id_token",
+      scope: "account openid",
     }
 
     {:ok, response} = Tesla.post(client, "/api/v1/authorization", req_body)

@@ -10,9 +10,10 @@ defmodule KintamaStoreBot.Application do
     children = [
       # Starts a worker by calling: KintamaStore.Worker.start_link(arg)
       # {KintamaStore.Worker, arg}
-      Nosedrum.Storage.ETS,
+      # Nosedrum.Storage.ETS,
       {KintamaStoreBot.Consumer, restart: :permanent, max_restarts: 10},
       {KintamaStoreBot.Repo, []},
+      {Bandit, plug: KintamaStoreBot.Plug.OAuthPlug, scheme: :http, port: Application.get_env(:bandit, :port)},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

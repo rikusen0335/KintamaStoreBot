@@ -96,12 +96,12 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
           }
         })
       {username, password} ->
-        Memento.transaction! fn ->
+        Memento.transaction fn ->
           Memento.Query.select(AuthState, {:==, :discord_user_id, discord_user_id})
           |> Enum.at(0)
           |> case do
             %AuthState{} ->
-              MementoUtils.update_state(discord_user_id, %{
+              MementoUtils.update_state!(discord_user_id, %{
                 state_name: "auth",
                 executed_command: cmd_name,
                 username: username,
@@ -109,7 +109,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
               })
 
             _ ->
-              Memento.Query.write(%AuthState{
+              Memento.Query.write!(%AuthState{
                 discord_user_id: discord_user_id,
                 state_name: "auth",
                 executed_command: cmd_name,
@@ -121,6 +121,8 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
 
         auth_client = RiotAuthApi.client("")
         initial_cookie = auth_client |> RiotAuthApi.auth_cookies()
+        
+        IO.puts("Proceeding login to riot account...")
 
         # Thus auth_request returns token with path, or 2fa response
         # auth_requestは成功時にパスに入ったトークンか、もしくは2段階認証を返す
@@ -128,6 +130,7 @@ defmodule KintamaStoreBot.Handler.InteractionHandler do
 
         case res_body do
           %{"error" => "auth_failure"} ->
+            IO.inspect(res_body)
             Api.create_interaction_response(interaction, %{
               type: 4,
               data: %{
