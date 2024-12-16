@@ -6,17 +6,14 @@ defmodule KintamaStoreBot.Consumer do
   alias KintamaStoreBot.Handler.{InteractionHandler,MessageHandler}
   alias KintamaStoreBot.Utils.DiscordUtils
 
-  alias Nosedrum.Invoker.Split, as: CommandInvoker
-  alias Nosedrum.Storage.ETS, as: CommandStorage
-
   use Nostrum.Consumer
 
-  @commands %{
-    "applycmd" => KintamaStoreBot.Cogs.ApplyCommand,
-    "removecmd" => KintamaStoreBot.Cogs.RemoveCommand,
-    "listcmd" => KintamaStoreBot.Cogs.ListGuildCommands,
-    "help" => KintamaStoreBot.Cogs.Help,
-  }
+  # @commands %{
+  #   "applycmd" => KintamaStoreBot.Cogs.ApplyCommand,
+  #   "removecmd" => KintamaStoreBot.Cogs.RemoveCommand,
+  #   "listcmd" => KintamaStoreBot.Cogs.ListGuildCommands,
+  #   "help" => KintamaStoreBot.Cogs.Help,
+  # }
 
   def start_link do
     Memento.Schema.create([node()])
@@ -30,18 +27,18 @@ defmodule KintamaStoreBot.Consumer do
   end
 
   def handle_event({:READY, _data, _ws_state}) do
-    Api.update_status(:online, ".help")
+    Api.update_status(:online, "/storeでストアを確認しよう")
 
-    Enum.each(@commands, fn {name, cog} -> CommandStorage.add_command([name], cog) end)
+    # Enum.each(@commands, fn {name, cog} -> CommandStorage.add_command([name], cog) end)
   end
 
-  def handle_event({:MESSAGE_CREATE, msg, _ws_state}) do
+  def handle_event({:MESSAGE_CREATE, {_old_msg, new_msg}, _ws_state}) do
     try do
-      CommandInvoker.handle_message(msg, CommandStorage)
-      MessageHandler.handle_before(msg)
+      # CommandInvoker.handle_message(msg, CommandStorage)
+      MessageHandler.handle_before(new_msg)
     rescue
       e ->
-        Api.create_message(msg.channel_id, ":exclamation: コマンドの実行中にエラーが発生しました。もう一度お試しいただくか、管理者に連絡してください。")
+        Api.create_message(new_msg.channel_id, ":exclamation: コマンドの実行中にエラーが発生しました。もう一度お試しいただくか、管理者に連絡してください。")
         IO.inspect(e, label: "An error occued while handling message")
     end
   end
@@ -60,7 +57,8 @@ defmodule KintamaStoreBot.Consumer do
             flags: 64
           }
         })
-        IO.inspect(e, label: "An error occued while handling message")
+        IO.inspect(e, label: "An error occued while handling interaction")
+        IO.puts(Exception.format_stacktrace(__STACKTRACE__))
     end
   end
 

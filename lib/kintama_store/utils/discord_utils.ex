@@ -3,7 +3,7 @@ defmodule KintamaStoreBot.Utils.DiscordUtils do
   alias Nostrum.Struct.{Interaction}
 
   def get_user_id(%Interaction{} = interaction) do
-    Integer.to_string(interaction.member.user.id)
+    Integer.to_string(interaction.member.user_id)
   end
 
   def get_guild_id(%Interaction{} = interaction) do
